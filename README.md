@@ -18,12 +18,12 @@ Then in your unit test:
 
       test ".changeset - Validations" do
         %User{}
-        |> assert_valid_values(:email, ["something@else.com"])
-        |> assert_invalid_values(:email, ["", nil, "test"])
-        |> assert_valid_values(:password, ["password123!"])
-        |> assert_invalid_values(:password, [nil, "", "test", "nospecialcharacters1", "nonumber!"])
+        |> assert_valid_field(:email, ["something@else.com"])
+        |> assert_invalid_field(:email, ["", nil, "test"])
+        |> assert_valid_field(:password, ["password123!"])
+        |> assert_invalid_field(:password, [nil, "", "test", "nospecialcharacters1", "nonumber!"])
       end
-   end
+    end
 
 ## Copyright & License
 
