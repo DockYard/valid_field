@@ -7,43 +7,75 @@ defmodule ValidField do
 
   @doc """
   Raises an ExUnit.AssertionError when the values for the field are invalid for
-  the model provided. Returns the original model to allow subsequent calls to
-  be piped
+  the changset provided. Returns the original changset map from `with_changeset/1`
+  to allow subsequent calls to be piped
 
   ## Examples
-      iex> ValidField.assert_valid_field(%Model{}, :first_name, ["Test"])
+      iex> ValidField.with_changeset(%Model{})
+      ...> |> ValidField.assert_valid_field(:first_name, ["Test"])
       ...> |> ValidField.assert_valid_field(:last_name, ["Value"])
-      iex> ValidField.assert_valid_field(%Model{}, :first_name, [nil, ""])
+      iex> ValidField.with_changeset(%Model{})
+      ...> |> ValidField.assert_valid_field(:first_name, [nil, ""])
       ** (ExUnit.AssertionError) Expected the following values to be valid for "first_name": nil, ""
   """
-  @spec assert_valid_field(Ecto.Model.t, atom, list) :: Ecto.Model.t
-  def assert_valid_field(model, field, values) do
-    invalid_values = _map_value_assertions(model, field, values)
+  @spec assert_valid_field(map, atom, list) :: map
+  def assert_valid_field(changeset, field, values) do
+    invalid_values = _map_value_assertions(changeset, field, values)
     |> Enum.filter_map(fn {_key, value} -> value end, fn {key, _value} -> key end)
 
     assert invalid_values == [], "Expected the following values to be valid for #{inspect Atom.to_string(field)}: #{_format_values invalid_values}"
-    model
+    changeset
   end
 
   @doc """
   Raises an ExUnit.AssertionError when the values for the field are valid for
-  the model provided. Returns the original model to allow subsequent calls to
-  be piped
+  the changset provided. Returns the original changset map from `with_changeset/1`
+  to allow subsequent calls to be piped
 
   ## Examples
-      iex> ValidField.assert_invalid_field(%Model{}, :first_name, [nil])
+      iex> ValidField.with_changeset(%Model{})
+      ...> |> ValidField.assert_invalid_field(:first_name, [nil])
       ...> |> ValidField.assert_invalid_field(:first_name, [""])
-      iex> ValidField.assert_invalid_field(%Model{}, :first_name, ["Test"])
+      iex> ValidField.with_changeset(%Model{})
+      ...> |> ValidField.assert_invalid_field(:first_name, ["Test"])
       ** (ExUnit.AssertionError) Expected the following values to be invalid for "first_name": "Test"
   """
-  @spec assert_invalid_field(Ecto.Model.t, atom, list) :: Ecto.Model.t
-  def assert_invalid_field(model, field, values) do
-    valid_values = _map_value_assertions(model, field, values)
+  @spec assert_invalid_field(map, atom, list) :: map
+  def assert_invalid_field(changeset, field, values) do
+    valid_values = _map_value_assertions(changeset, field, values)
     |> Enum.filter_map(fn {_key, value} -> !value end, fn {key, _value} -> key end)
 
     assert valid_values == [], "Expected the following values to be invalid for #{inspect Atom.to_string(field)}: #{_format_values valid_values}"
-    model
+    changeset
   end
+
+  @doc """
+  Returns a changeset map to be used with `assert_valid_field/3` or
+  `assert_invalid_field/3`. When with_changeset is passed a single arguments, it is
+  assumed to be an Ecto Model struct and will call the `changeset` function on
+  the struct's module
+
+  ## Examples
+      ValidField.with_changeset(%Model{})
+      |> ValidField.assert_invalid_field(:first_name, [nil])
+      |> ValidField.assert_invalid_field(:first_name, [""])
+  """
+  @spec with_changeset(Ecto.Model.t) :: map
+  def with_changeset(model), do: with_changeset(model, &model.__struct__.changeset/2)
+
+  @doc """
+  Returns a changeset map to be used with `assert_valid_field/3` or
+  `assert_invalid_field/3`. The function passed to `with_changeset/2` must accept two
+  arguments, the first being the model provided to `with_changeset/2`, the second
+  being the map of properties to be applied in the changeset.
+
+  ## Examples
+      ValidField.with_changeset(%Model{}, &Model.changeset/2)
+      |> ValidField.assert_invalid_field(:first_name, [nil])
+      |> ValidField.assert_invalid_field(:first_name, [""])
+  """
+  @spec with_changeset(Ecto.Model.t, function) :: map
+  def with_changeset(model, func) when is_function(func), do: %{model: model, changeset_func: func}
 
   defp _format_values(values) do
     values
@@ -51,22 +83,14 @@ defmodule ValidField do
     |> Enum.join(", ")
   end
 
-  defp _map_value_assertions(model, field, values) do
+  defp _map_value_assertions(changeset, field, values) do
     values
-    |> Enum.map(fn
-      value ->
-        attributes = %{}
-        |> Map.put(field, value)
-
-        {value,
-          model
-          |> _errors_for(attributes)
-          |> Dict.has_key?(field)
-        }
-    end)
+    |> Enum.map(fn value -> {value, _is_invalid_for(changeset, field, value)} end)
   end
 
-  defp _errors_for(model, data) do
-    model.__struct__.changeset(model, data).errors
+  defp _is_invalid_for(%{model: model, changeset_func: changeset}, field, value) do
+    params = Map.put(%{},field, value)
+    changeset.(model, params).errors
+    |> Dict.has_key?(field)
   end
 end
