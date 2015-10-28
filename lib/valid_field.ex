@@ -1,8 +1,7 @@
 defmodule ValidField do
   import ExUnit.Assertions, only: [assert: 2]
   @moduledoc ~S"""
-  ValidField allows for unit testing values against a changeset. It is assumed that
-  the changeset function is defined on the model you are testing.
+  ValidField allows for unit testing values against a changeset.
   """
 
   @doc """

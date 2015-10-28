@@ -1,6 +1,6 @@
 # ValidField
 
-ValidField allows you to unit test changesets defined on a model
+ValidField allows you to unit test changesets
 
 ## Usage
 
@@ -17,7 +17,7 @@ Then in your unit test:
       alias App.User
 
       test ".changeset - Validations" do
-        %User{}
+        with_changeset(%User{})
         |> assert_valid_field(:email, ["something@else.com"])
         |> assert_invalid_field(:email, ["", nil, "test"])
         |> assert_valid_field(:password, ["password123!"])

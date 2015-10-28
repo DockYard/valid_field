@@ -1,7 +1,7 @@
 defmodule ValidField.Mixfile do
   use Mix.Project
+  @version "0.2.0"
 
-  @version "0.1.1"
   def project do
     [app: :valid_field,
      version: @version,
@@ -44,7 +44,7 @@ defmodule ValidField.Mixfile do
 
   defp deps do
     [
-      {:ecto, "~> 1.0", optional: true},
+      {:ecto, "~> 1.0"},
       {:ex_doc, "~> 0.10", only: :docs}
     ]
   end
