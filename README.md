@@ -7,7 +7,7 @@ ValidField allows you to unit test changesets
 Add valid_field to your list of dependencies in `mix.exs`:
 
     def deps do
-      [{:valid_field, "~> 0.1.0", only: :test}]
+      [{:valid_field, "~> 0.2.0", only: :test}]
     end
 
 Then in your unit test:
