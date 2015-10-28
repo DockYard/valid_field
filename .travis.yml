@@ -1,0 +1,12 @@
+language: elixir
+elixir: 1.1.1
+cache:
+ - _build
+ - deps
+sudo: false
+before_script:
+  - mix local.hex --force
+  - mix deps.get
+after_script:
+  - mix deps.get --only docs
+  - MIX_ENV=docs mix inch.report
