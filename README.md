@@ -9,24 +9,28 @@ ValidField allows you to unit test changesets
 
 Add valid_field to your list of dependencies in `mix.exs`:
 
-    def deps do
-      [{:valid_field, "~> 0.2.0", only: :test}]
-    end
+```elixir
+def deps do
+  [{:valid_field, "~> 0.2.0", only: :test}]
+end
+```
 
 Then in your unit test:
 
-    defmodule App.UserTest do
-      import ValidField
-      alias App.User
+```elixir
+defmodule App.UserTest do
+  import ValidField
+  alias App.User
 
-      test ".changeset - Validations" do
-        with_changeset(%User{})
-        |> assert_valid_field(:email, ["something@else.com"])
-        |> assert_invalid_field(:email, ["", nil, "test"])
-        |> assert_valid_field(:password, ["password123!"])
-        |> assert_invalid_field(:password, [nil, "", "test", "nospecialcharacters1", "nonumber!"])
-      end
-    end
+  test ".changeset - Validations" do
+    with_changeset(%User{})
+    |> assert_valid_field(:email, ["something@else.com"])
+    |> assert_invalid_field(:email, ["", nil, "test"])
+    |> assert_valid_field(:password, ["password123!"])
+    |> assert_invalid_field(:password, [nil, "", "test", "nospecialcharacters1", "nonumber!"])
+  end
+end
+```
 
 ## Copyright & License
 
