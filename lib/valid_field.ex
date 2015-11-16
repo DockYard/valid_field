@@ -49,6 +49,22 @@ defmodule ValidField do
   end
 
   @doc """
+  Combines `assert_valid_field/3` and `assert_invalid_field/3` into a single call.
+  The third argument is the collection of valid values to be tested. The fourth argument 
+  is the collection of invalid values to be tested.
+
+  ## Examples
+      ValidField.with_changeset(%Model{})
+      |> ValidField.assert_field(:first_name, ["George", "Barry"], ["", nil])
+  """
+  @spec assert_field(map, atom, list, list) :: map
+  def assert_field(changeset, field, valid_values, invalid_values) do
+    changeset
+    |> assert_valid_field(field, valid_values)
+    |> assert_invalid_field(field, invalid_values)
+  end
+
+  @doc """
   Returns a changeset map to be used with `assert_valid_field/3` or
   `assert_invalid_field/3`. When with_changeset is passed a single arguments, it is
   assumed to be an Ecto Model struct and will call the `changeset` function on

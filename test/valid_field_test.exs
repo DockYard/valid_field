@@ -44,4 +44,19 @@ defmodule ValidFieldTest do
       |> ValidField.assert_valid_field(:first_name, ["", nil])
     end
   end
+
+  test "assert_field combines assert_valid_field and assert_invalid_field" do
+    ValidField.with_changeset(%Model{})
+    |> ValidField.assert_field(:first_name, ["Test", "Good Value"], ["", nil])
+
+    assert_raise ExUnit.AssertionError, "Expected the following values to be valid for \"first_name\": \"\", nil", fn ->
+      ValidField.with_changeset(%Model{})
+      |> ValidField.assert_field(:first_name, ["", nil], ["", nil])
+    end
+
+    assert_raise ExUnit.AssertionError, "Expected the following values to be invalid for \"first_name\": \"Test\", \"Good Value\"", fn ->
+      ValidField.with_changeset(%Model{})
+      |> ValidField.assert_field(:first_name, ["Test", "Good Value"], ["Test", "Good Value"])
+    end
+  end
 end

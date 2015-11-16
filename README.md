@@ -32,6 +32,23 @@ defmodule App.UserTest do
 end
 ```
 
+Alternatively you can combine the `assert_valid_field/3` and
+`assert_invalid_field/3` syntax into `assert_field/4`. Refactoring the
+same example above using `assert_field/4` would yield:
+
+```elixir
+defmodule App.UserTest do
+  import ValidField
+  alias App.User
+
+  test ".changeset - Validations" do
+    with_changeset(%User{})
+    |> assert_field(:email, ["something@else.com"], ["", nil, "test"])
+    |> assert_valid(:password, ["password123!"], [nil, "", "test", "nospecialcharacters1", "nonumber!"])
+  end
+end
+```
+
 ## Copyright & License
 
 Copyright (c) 2015, Dan McClain.
