@@ -25,6 +25,26 @@ defmodule ValidFieldTest do
     end
   end
 
+  test "valid field with no values passed" do
+    ValidField.with_changeset(%Model{first_name: "Test"})
+    |> ValidField.assert_valid_field(:first_name)
+
+    assert_raise ExUnit.AssertionError, "Expected the following values to be valid for \"first_name\": nil", fn ->
+      ValidField.with_changeset(%Model{})
+      |> ValidField.assert_valid_field(:first_name)
+    end
+  end
+
+  test "valid fields with no values passed" do
+    ValidField.with_changeset(%Model{first_name: "Test", last_name: "Something", title: "Something else"})
+    |> ValidField.assert_valid_fields([:first_name, :last_name, :title])
+
+    assert_raise ExUnit.AssertionError, "Expected the following values to be valid for \"first_name\": nil", fn ->
+      ValidField.with_changeset(%Model{})
+      |> ValidField.assert_valid_fields([:first_name, :last_name, :title])
+    end
+  end
+
   test "invalid field values" do
     ValidField.with_changeset(%Model{})
     |> ValidField.assert_invalid_field(:first_name, ["", nil])
@@ -32,6 +52,26 @@ defmodule ValidFieldTest do
     assert_raise ExUnit.AssertionError, "Expected the following values to be valid for \"first_name\": \"\", nil", fn ->
       ValidField.with_changeset(%Model{})
       |> ValidField.assert_valid_field(:first_name, ["", nil])
+    end
+  end
+
+  test "invalid field with no values values" do
+    ValidField.with_changeset(%Model{})
+    |> ValidField.assert_invalid_field(:first_name)
+
+    assert_raise ExUnit.AssertionError, "Expected the following values to be invalid for \"first_name\": \"Test\"", fn ->
+      ValidField.with_changeset(%Model{first_name: "Test"})
+      |> ValidField.assert_invalid_field(:first_name)
+    end
+  end
+
+  test "invalid fields with no values values" do
+    ValidField.with_changeset(%Model{})
+    |> ValidField.assert_invalid_fields([:first_name])
+
+    assert_raise ExUnit.AssertionError, "Expected the following values to be invalid for \"first_name\": \"Test\"", fn ->
+      ValidField.with_changeset(%Model{first_name: "Test"})
+      |> ValidField.assert_invalid_fields([:first_name])
     end
   end
 
@@ -58,5 +98,15 @@ defmodule ValidFieldTest do
       ValidField.with_changeset(%Model{})
       |> ValidField.assert_field(:first_name, ["Test", "Good Value"], ["Test", "Good Value"])
     end
+  end
+
+  test "passing changeset directly into assertions" do
+    Model.changeset(%Model{}, %{first_name: "Test", last_name: "Something", title: "Something else"})
+    |> ValidField.assert_valid_field(:first_name)
+    |> ValidField.assert_valid_field(:last_name)
+    |> ValidField.assert_valid_field(:title)
+
+    Model.changeset(%Model{}, %{})
+    |> ValidField.assert_invalid_field(:first_name)
   end
 end
