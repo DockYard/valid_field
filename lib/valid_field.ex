@@ -27,6 +27,38 @@ defmodule ValidField do
   end
 
   @doc """
+  Will assert if the given field's current value in the changeset is valid or not.
+
+  ## Examples
+    iex> ValidField.with_changeset(%Model{first_name: "Test"})
+    ...> |> ValidField.assert_valid_field(:first_name)
+    iex> ValidField.with_changeset(%Model{})
+    ...> |> ValidField.assert_valid_field(:first_name)
+    ** (ExUnit.AssertionError) Expected the following values to be valid for "first_name": nil
+  """
+  @spec assert_valid_field(map, atom) :: map
+  def assert_valid_field(changeset, field) do
+    assert_valid_field(changeset, field, [Map.get(changeset.model, field)])
+  end
+
+  @doc """
+  Will assert if the given fields current values in the changeset are valid or not.
+
+  Only returns an error on the first occurance, doesn't collect.
+
+  ## Examples
+    iex> ValidField.with_changeset(%Model{})
+    ...> |> ValidField.assert_valid_fields([:first_name, :last_name])
+    iex> ValidField.with_changeset(%Model{first_name: "Test", last_name: "Something"})
+    ...> |> ValidField.assert_valid_fields([:first_name, :last_name])
+    ** (ExUnit.AssertionError) Expected the following values to be valid for "first_name": nil
+  """
+  @spec assert_valid_fields(map, list) :: map
+  def assert_valid_fields(changeset, fields) when is_list(fields) do
+    Enum.each fields, fn(field) -> assert_valid_field(changeset, field) end
+  end
+
+  @doc """
   Raises an ExUnit.AssertionError when the values for the field are valid for
   the changset provided. Returns the original changset map from `with_changeset/1`
   to allow subsequent calls to be piped
@@ -46,6 +78,38 @@ defmodule ValidField do
 
     assert valid_values == [], "Expected the following values to be invalid for #{inspect Atom.to_string(field)}: #{_format_values valid_values}"
     changeset
+  end
+
+  @doc """
+  Will assert if the given field's current value in the changeset is invalid or not.
+
+  ## Examples
+    iex> ValidField.with_changeset(%Model{})
+    ...> |> ValidField.assert_invalid_field(:first_name)
+    iex> ValidField.with_changeset(%Model{first_name: "Test"})
+    ...> |> ValidField.assert_invalid_field(:first_name)
+    ** (ExUnit.AssertionError) Expected the following values to be invalid for "first_name": "Test"
+  """
+  @spec assert_invalid_field(map, atom) :: map
+  def assert_invalid_field(changeset, field) do
+    assert_invalid_field(changeset, field, [Map.get(changeset.model, field)])
+  end
+
+  @doc """
+  Will assert if the given fields current values in the changeset are invalid or not.
+
+  Only returns an error on the first occurance, doesn't collect.
+
+  ## Examples
+    iex> ValidField.with_changeset(%Model{})
+    ...> |> ValidField.assert_invalid_fields([:first_name])
+    iex> ValidField.with_changeset(%Model{first_name: "Test"})
+    ...> |> ValidField.assert_invalid_fields([:first_name])
+    ** (ExUnit.AssertionError) Expected the following values to be invalid for "first_name": "Test"
+  """
+  @spec assert_invalid_fields(map, list) :: map
+  def assert_invalid_fields(changeset, fields) when is_list(fields) do
+    Enum.each fields, fn(field) -> assert_invalid_field(changeset, field) end
   end
 
   @doc """
@@ -106,6 +170,11 @@ defmodule ValidField do
   defp _is_invalid_for(%{model: model, changeset_func: changeset}, field, value) do
     params = Map.put(%{},field, value)
     changeset.(model, params).errors
+    |> Dict.has_key?(field)
+  end
+
+  defp _is_invalid_for(changeset, field, value) do
+    changeset.errors
     |> Dict.has_key?(field)
   end
 end
