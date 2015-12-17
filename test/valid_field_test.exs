@@ -109,4 +109,9 @@ defmodule ValidFieldTest do
     Model.changeset(%Model{}, %{})
     |> ValidField.assert_invalid_field(:first_name)
   end
+
+  test "passing field with key type mismatch from changeset params" do
+    ValidField.with_changeset(%Model{}, &Model.other_changeset/2)
+    |> ValidField.assert_valid_field(:first_name, ["Test"])
+  end
 end
