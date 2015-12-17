@@ -168,7 +168,7 @@ defmodule ValidField do
   end
 
   defp _is_invalid_for(%{model: model, changeset_func: changeset}, field, value) do
-    params = Map.put(%{},field, value)
+    params = Map.put(%{}, stringify_field(field), value)
     changeset.(model, params).errors
     |> Dict.has_key?(field)
   end
@@ -177,4 +177,7 @@ defmodule ValidField do
     changeset.errors
     |> Dict.has_key?(field)
   end
+
+  defp stringify_field(field) when is_atom(field), do: Atom.to_string(field)
+  defp stringify_field(field) when is_binary(field), do: field
 end

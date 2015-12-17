@@ -18,4 +18,10 @@ defmodule ValidField.Support.Model do
     |> cast(params, @required_fields, @optional_fields)
     |> validate_length(:first_name, min: 1)
   end
+
+  def other_changeset(model, params) do
+    params = Map.merge(params, %{"title" => "Grand Poobah"})
+
+    changeset(model, params)
+  end
 end
