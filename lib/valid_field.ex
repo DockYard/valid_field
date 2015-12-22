@@ -30,11 +30,11 @@ defmodule ValidField do
   Will assert if the given field's current value in the changeset is valid or not.
 
   ## Examples
-    iex> ValidField.with_changeset(%Model{first_name: "Test"})
-    ...> |> ValidField.assert_valid_field(:first_name)
-    iex> ValidField.with_changeset(%Model{})
-    ...> |> ValidField.assert_valid_field(:first_name)
-    ** (ExUnit.AssertionError) Expected the following values to be valid for "first_name": nil
+      iex> ValidField.with_changeset(%Model{first_name: "Test"})
+      ...> |> ValidField.assert_valid_field(:first_name)
+      iex> ValidField.with_changeset(%Model{})
+      ...> |> ValidField.assert_valid_field(:first_name)
+      ** (ExUnit.AssertionError) Expected the following values to be valid for "first_name": nil
   """
   @spec assert_valid_field(map, atom) :: map
   def assert_valid_field(changeset, field) do
@@ -47,11 +47,11 @@ defmodule ValidField do
   Only returns an error on the first occurance, doesn't collect.
 
   ## Examples
-    iex> ValidField.with_changeset(%Model{})
-    ...> |> ValidField.assert_valid_fields([:first_name, :last_name])
-    iex> ValidField.with_changeset(%Model{first_name: "Test", last_name: "Something"})
-    ...> |> ValidField.assert_valid_fields([:first_name, :last_name])
-    ** (ExUnit.AssertionError) Expected the following values to be valid for "first_name": nil
+      iex> ValidField.with_changeset(%Model{})
+      ...> |> ValidField.assert_valid_fields([:first_name, :last_name])
+      iex> ValidField.with_changeset(%Model{first_name: "Test", last_name: "Something"})
+      ...> |> ValidField.assert_valid_fields([:first_name, :last_name])
+      ** (ExUnit.AssertionError) Expected the following values to be valid for "first_name": nil
   """
   @spec assert_valid_fields(map, list) :: map
   def assert_valid_fields(changeset, fields) when is_list(fields) do
@@ -84,11 +84,11 @@ defmodule ValidField do
   Will assert if the given field's current value in the changeset is invalid or not.
 
   ## Examples
-    iex> ValidField.with_changeset(%Model{})
-    ...> |> ValidField.assert_invalid_field(:first_name)
-    iex> ValidField.with_changeset(%Model{first_name: "Test"})
-    ...> |> ValidField.assert_invalid_field(:first_name)
-    ** (ExUnit.AssertionError) Expected the following values to be invalid for "first_name": "Test"
+      iex> ValidField.with_changeset(%Model{})
+      ...> |> ValidField.assert_invalid_field(:first_name)
+      iex> ValidField.with_changeset(%Model{first_name: "Test"})
+      ...> |> ValidField.assert_invalid_field(:first_name)
+      ** (ExUnit.AssertionError) Expected the following values to be invalid for "first_name": "Test"
   """
   @spec assert_invalid_field(map, atom) :: map
   def assert_invalid_field(changeset, field) do
@@ -101,11 +101,11 @@ defmodule ValidField do
   Only returns an error on the first occurance, doesn't collect.
 
   ## Examples
-    iex> ValidField.with_changeset(%Model{})
-    ...> |> ValidField.assert_invalid_fields([:first_name])
-    iex> ValidField.with_changeset(%Model{first_name: "Test"})
-    ...> |> ValidField.assert_invalid_fields([:first_name])
-    ** (ExUnit.AssertionError) Expected the following values to be invalid for "first_name": "Test"
+      iex> ValidField.with_changeset(%Model{})
+      ...> |> ValidField.assert_invalid_fields([:first_name])
+      iex> ValidField.with_changeset(%Model{first_name: "Test"})
+      ...> |> ValidField.assert_invalid_fields([:first_name])
+      ** (ExUnit.AssertionError) Expected the following values to be invalid for "first_name": "Test"
   """
   @spec assert_invalid_fields(map, list) :: map
   def assert_invalid_fields(changeset, fields) when is_list(fields) do
