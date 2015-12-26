@@ -16,7 +16,7 @@ defmodule ValidField.Support.Model do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
-    |> validate_length(:first_name, min: 1)
+    |> validate_length(:first_name, min: 2)
   end
 
   def other_changeset(model, params) do
