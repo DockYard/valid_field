@@ -114,4 +114,18 @@ defmodule ValidFieldTest do
     ValidField.with_changeset(%Model{}, &Model.other_changeset/2)
     |> ValidField.assert_valid_field(:first_name, ["Test"])
   end
+
+  test "only reports on failed values" do
+    changeset = ValidField.with_changeset(%Model{})
+
+    assert_raise ExUnit.AssertionError, "Expected the following values to be valid for \"first_name\": \"a\"", fn ->
+      changeset
+      |> ValidField.assert_valid_field(:first_name, ["a", "ab"])
+    end
+
+    assert_raise ExUnit.AssertionError, "Expected the following values to be invalid for \"first_name\": \"ab\"", fn ->
+      changeset
+      |> ValidField.assert_invalid_field(:first_name, ["a", "ab"])
+    end
+  end
 end
