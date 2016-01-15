@@ -44,7 +44,7 @@ defmodule App.UserTest do
   test ".changeset - Validations" do
     with_changeset(%User{})
     |> assert_field(:email, ["something@else.com"], ["", nil, "test"])
-    |> assert_valid(:password, ["password123!"], [nil, "", "test", "nospecialcharacters1", "nonumber!"])
+    |> assert_field(:password, ["password123!"], [nil, "", "test", "nospecialcharacters1", "nonumber!"])
   end
 end
 ```
