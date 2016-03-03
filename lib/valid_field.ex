@@ -156,6 +156,14 @@ defmodule ValidField do
   @spec with_changeset(Ecto.Model.t, function) :: map
   def with_changeset(model, func) when is_function(func), do: %{model: model, changeset_func: func}
 
+  @doc """
+  Add values that will be set on the changeset during assertion runs
+  """
+  @spec put_params(map, map) :: map
+  def put_params(changeset, params) when is_map(changeset) do
+    Map.put(changeset, :params, params)
+  end
+
   defp _format_values(values) do
     values
     |> Enum.map(&inspect/1)
@@ -167,10 +175,19 @@ defmodule ValidField do
     |> Enum.map(fn value -> {value, _is_invalid_for(changeset, field, value)} end)
   end
 
-  defp _is_invalid_for(%{model: model, changeset_func: changeset}, field, value) do
-    params = Map.put(%{}, stringify_field(field), value)
+
+  defp _is_invalid_for(%{model: model, params: params, changeset_func: changeset}, field, value) do
+    params =
+      params
+      |> Map.put(field, value)
+      |> stringify_keys()
+
     changeset.(model, params).errors
     |> Dict.has_key?(field)
+  end
+
+  defp _is_invalid_for(%{model: model, changeset_func: changeset}, field, value) do
+    _is_invalid_for(%{params: %{}, model: model, changeset_func: changeset}, field, value)
   end
 
   defp _is_invalid_for(changeset, field, value) do
@@ -180,4 +197,10 @@ defmodule ValidField do
 
   defp stringify_field(field) when is_atom(field), do: Atom.to_string(field)
   defp stringify_field(field) when is_binary(field), do: field
+
+  defp stringify_keys(map) when is_map(map),
+    do: Enum.into(map, %{}, fn({key, value}) ->
+      {stringify_field(key), stringify_keys(value)}
+    end)
+  defp stringify_keys(value), do: value
 end

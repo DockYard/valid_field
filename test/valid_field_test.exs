@@ -114,4 +114,12 @@ defmodule ValidFieldTest do
     ValidField.with_changeset(%Model{}, &Model.other_changeset/2)
     |> ValidField.assert_valid_field(:first_name, ["Test"])
   end
+
+  test "with_params will set params for one assertion then clear itself" do
+    ValidField.with_changeset(%Model{})
+    |> ValidField.put_params(%{password: "password"})
+    |> ValidField.assert_valid_field(:password_confirmation, ["password"])
+    |> ValidField.assert_invalid_field(:password_confirmation, ["baspassword"])
+    |> ValidField.assert_field(:password_confirmation, ["password"], ["badpassword"])
+  end
 end
