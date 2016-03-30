@@ -5,7 +5,7 @@ defmodule ValidField.Mixfile do
   def project do
     [app: :valid_field,
      version: @version,
-     elixir: "~> 1.1",
+     elixir: "~> 1.2",
      elixirc_paths: elixirc_paths(Mix.env),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
