@@ -41,7 +41,7 @@ defmodule ValidField do
   """
   @spec assert_valid_field(map, atom) :: map
   def assert_valid_field(changeset, field) do
-    assert_valid_field(changeset, field, [Map.get(changeset.model, field)])
+    assert_valid_field(changeset, field, [get(changeset, field)])
   end
 
   @doc """
@@ -98,7 +98,7 @@ defmodule ValidField do
   """
   @spec assert_invalid_field(map, atom) :: map
   def assert_invalid_field(changeset, field) do
-    assert_invalid_field(changeset, field, [Map.get(changeset.model, field)])
+    assert_invalid_field(changeset, field, [get(changeset, field)])
   end
 
   @doc """
@@ -120,7 +120,7 @@ defmodule ValidField do
 
   @doc """
   Combines `assert_valid_field/3` and `assert_invalid_field/3` into a single call.
-  The third argument is the collection of valid values to be tested. The fourth argument 
+  The third argument is the collection of valid values to be tested. The fourth argument
   is the collection of invalid values to be tested.
 
   ## Examples
@@ -181,6 +181,18 @@ defmodule ValidField do
   defp map_value_assertions(changeset, field, values) do
     values
     |> Enum.map(&({&1, invalid_for?(changeset, field, &1)}))
+  end
+
+  defp get(changeset, field) do
+    data = if Map.has_key?(changeset, :data) do
+      :data
+    else
+      :model
+    end
+
+    changeset
+    |> Map.get(data)
+    |> Map.get(field)
   end
 
   defp invalid_for?(%{model: model, params: params, changeset_func: changeset}, field, value) do
