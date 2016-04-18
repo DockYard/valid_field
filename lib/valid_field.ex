@@ -183,16 +183,12 @@ defmodule ValidField do
     |> Enum.map(&({&1, invalid_for?(changeset, field, &1)}))
   end
 
-  defp get(changeset, field) do
-    data = if Map.has_key?(changeset, :data) do
-      :data
-    else
-      :model
-    end
+  defp get(%{data: data}, field) do
+    Map.get(data, field)
+  end
 
-    changeset
-    |> Map.get(data)
-    |> Map.get(field)
+  defp get(%{model: model}, field) do
+    Map.get(model, field)
   end
 
   defp invalid_for?(%{model: model, params: params, changeset_func: changeset}, field, value) do
