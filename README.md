@@ -1,6 +1,6 @@
 # ValidField
 
-[![Build Status](https://travis-ci.org/dockyard/valid_field.svg?branch=master)](https://travis-ci.org/dockyard/valid_field)
+[![Build Status](https://travis-ci.org/DockYard/valid_field.svg?branch=master)](https://travis-ci.org/DockYard/valid_field)
 [![Inline docs](http://inch-ci.org/github/dockyard/valid_field.svg?branch=master)](http://inch-ci.org/github/dockyard/valid_field)
 
 ValidField allows you to unit test changesets
