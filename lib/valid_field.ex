@@ -195,7 +195,7 @@ defmodule ValidField do
 
   defp invalid_for?(%{model: model, changeset_func: changeset}, field, value),
     do: invalid_for?(%{params: %{}, model: model, changeset_func: changeset}, field, value)
-  defp invalid_for?(changeset, field, value),
+  defp invalid_for?(changeset, field, _value),
     do: Dict.has_key?(changeset.errors, field)
 
   defp stringify_field(field) when is_atom(field),
