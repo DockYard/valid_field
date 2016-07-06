@@ -1,7 +1,7 @@
 language: elixir
 elixir:
   - 1.1.1
-  - 1.2.0
+  - 1.2.6
 cache:
  - _build
  - deps
