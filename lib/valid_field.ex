@@ -4,7 +4,7 @@ defmodule ValidField do
   """
 
   @doc """
-  Raises an ValidField.ValidationException when the values for the field are invalid for
+  Raises an ValidField.ValidationError when the values for the field are invalid for
   the changset provided. Returns the original changset map from `with_changeset/1`
   to allow subsequent calls to be piped
 
@@ -14,7 +14,7 @@ defmodule ValidField do
       ...> |> ValidField.assert_valid_field(:last_name, ["Value"])
       iex> ValidField.with_changeset(%Model{})
       ...> |> ValidField.assert_valid_field(:first_name, [nil, ""])
-      ** (ValidField.ValidationException) Expected the following values to be valid for "first_name": nil, ""
+      ** (ValidField.ValidationError) Expected the following values to be valid for "first_name": nil, ""
   """
   @spec assert_valid_field(map, atom, list) :: map
   def assert_valid_field(changeset, field, values) do
@@ -24,7 +24,7 @@ defmodule ValidField do
       |> Enum.filter_map(fn {_key, value} -> value end, fn {key, _value} -> key end)
 
     if invalid_values != [] do
-      raise ValidField.ValidationException, field: field, values: values, validity: "valid"
+      raise ValidField.ValidationError, field: field, values: values, validity: "valid"
     end
 
     changeset
@@ -38,7 +38,7 @@ defmodule ValidField do
       ...> |> ValidField.assert_valid_field(:first_name)
       iex> ValidField.with_changeset(%Model{})
       ...> |> ValidField.assert_valid_field(:first_name)
-      ** (ValidField.ValidationException) Expected the following values to be valid for "first_name": nil
+      ** (ValidField.ValidationError) Expected the following values to be valid for "first_name": nil
   """
   @spec assert_valid_field(map, atom) :: map
   def assert_valid_field(changeset, field) do
@@ -55,7 +55,7 @@ defmodule ValidField do
       ...> |> ValidField.assert_valid_fields([:first_name, :last_name])
       iex> ValidField.with_changeset(%Model{first_name: "Test", last_name: "Something"})
       ...> |> ValidField.assert_valid_fields([:first_name, :last_name])
-      ** (ValidField.ValidationException) Expected the following values to be valid for "first_name": nil
+      ** (ValidField.ValidationError) Expected the following values to be valid for "first_name": nil
   """
   @spec assert_valid_fields(map, list) :: map
   def assert_valid_fields(changeset, fields) when is_list(fields) do
@@ -63,7 +63,7 @@ defmodule ValidField do
   end
 
   @doc """
-  Raises an ValidField.ValidationException when the values for the field are valid for
+  Raises an ValidField.ValidationError when the values for the field are valid for
   the changset provided. Returns the original changset map from `with_changeset/1`
   to allow subsequent calls to be piped
 
@@ -73,7 +73,7 @@ defmodule ValidField do
       ...> |> ValidField.assert_invalid_field(:first_name, [""])
       iex> ValidField.with_changeset(%Model{})
       ...> |> ValidField.assert_invalid_field(:first_name, ["Test"])
-      ** (ValidField.ValidationException) Expected the following values to be invalid for "first_name": "Test"
+      ** (ValidField.ValidationError) Expected the following values to be invalid for "first_name": "Test"
   """
   @spec assert_invalid_field(map, atom, list) :: map
   def assert_invalid_field(changeset, field, values) do
@@ -83,7 +83,7 @@ defmodule ValidField do
       |> Enum.filter_map(fn {_key, value} -> !value end, fn {key, _value} -> key end)
 
     if valid_values != [] do
-      raise ValidField.ValidationException, field: field, values: valid_values, validity: "invalid"
+      raise ValidField.ValidationError, field: field, values: valid_values, validity: "invalid"
     end
 
     changeset
@@ -97,7 +97,7 @@ defmodule ValidField do
       ...> |> ValidField.assert_invalid_field(:first_name)
       iex> ValidField.with_changeset(%Model{first_name: "Test"})
       ...> |> ValidField.assert_invalid_field(:first_name)
-      ** (ValidField.ValidationException) Expected the following values to be invalid for "first_name": "Test"
+      ** (ValidField.ValidationError) Expected the following values to be invalid for "first_name": "Test"
   """
   @spec assert_invalid_field(map, atom) :: map
   def assert_invalid_field(changeset, field) do
@@ -114,7 +114,7 @@ defmodule ValidField do
       ...> |> ValidField.assert_invalid_fields([:first_name])
       iex> ValidField.with_changeset(%Model{first_name: "Test"})
       ...> |> ValidField.assert_invalid_fields([:first_name])
-      ** (ValidField.ValidationException) Expected the following values to be invalid for "first_name": "Test"
+      ** (ValidField.ValidationError) Expected the following values to be invalid for "first_name": "Test"
   """
   @spec assert_invalid_fields(map, list) :: map
   def assert_invalid_fields(changeset, fields) when is_list(fields) do
