@@ -18,7 +18,7 @@ defmodule ValidField.Mixfile do
      # Docs
      name: "ValidField",
      docs: [source_ref: "v#{@version}", main: "ValidField",
-       source_url: "https://github.com/dockyard/valid_field"]]
+       source_url: "https://github.com/DockYard/valid_field"]]
   end
 
   def application do
@@ -32,9 +32,9 @@ defmodule ValidField.Mixfile do
   end
 
   defp package do
-    [maintainers: ["Dan McClain"],
+    [maintainers: ["Dan McClain", "Brian Cardarella"],
      licenses: ["MIT"],
-     links: %{"GitHub" => "https://github.com/dockyard/valid_field"},
+     links: %{"GitHub" => "https://github.com/DockYard/valid_field"},
      files: ~w(mix.exs README.md lib test) ++
             ~w(test)]
   end
