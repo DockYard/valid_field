@@ -42,7 +42,7 @@ defmodule ValidField do
   """
   @spec assert_valid_field(map, atom) :: map
   def assert_valid_field(changeset, field) do
-    assert_valid_field(changeset, field, [Map.get(changeset.model, field)])
+    assert_valid_field(changeset, field, [Map.get(changeset.data, field)])
   end
 
   @doc """
@@ -101,7 +101,7 @@ defmodule ValidField do
   """
   @spec assert_invalid_field(map, atom) :: map
   def assert_invalid_field(changeset, field) do
-    assert_invalid_field(changeset, field, [Map.get(changeset.model, field)])
+    assert_invalid_field(changeset, field, [Map.get(changeset.data, field)])
   end
 
   @doc """
@@ -165,7 +165,7 @@ defmodule ValidField do
   """
   @spec with_changeset(Ecto.Model.t, function) :: map
   def with_changeset(model, func) when is_function(func),
-    do: %{model: model, changeset_func: func}
+    do: %{data: model, changeset_func: func}
 
   @doc """
   Add values that will be set on the changeset during assertion runs
@@ -180,7 +180,7 @@ defmodule ValidField do
     |> Enum.map(&({&1, invalid_for?(changeset, field, &1)}))
   end
 
-  defp invalid_for?(%{model: model, params: params, changeset_func: changeset}, field, value) do
+  defp invalid_for?(%{data: model, params: params, changeset_func: changeset}, field, value) do
     params =
       params
       |> Map.put(field, value)
@@ -190,8 +190,8 @@ defmodule ValidField do
     |> Dict.has_key?(field)
   end
 
-  defp invalid_for?(%{model: model, changeset_func: changeset}, field, value),
-    do: invalid_for?(%{params: %{}, model: model, changeset_func: changeset}, field, value)
+  defp invalid_for?(%{data: model, changeset_func: changeset}, field, value),
+    do: invalid_for?(%{params: %{}, data: model, changeset_func: changeset}, field, value)
   defp invalid_for?(changeset, field, _value),
     do: Dict.has_key?(changeset.errors, field)
 
