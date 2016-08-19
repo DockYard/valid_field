@@ -1,11 +1,11 @@
 defmodule ValidField.Mixfile do
   use Mix.Project
-  @version "0.4.0"
+  @version "0.5.0"
 
   def project do
     [app: :valid_field,
      version: @version,
-     elixir: "~> 1.1",
+     elixir: "~> 1.3",
      elixirc_paths: elixirc_paths(Mix.env),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -44,7 +44,7 @@ defmodule ValidField.Mixfile do
 
   defp deps do
     [
-      {:ecto, "~> 1.1.8"},
+      {:ecto, "~> 2.0", only: [:dev, :test]},
       {:ex_doc, "~> 0.10", only: :docs},
       {:inch_ex, ">= 0.0.0", only: :docs}
     ]
