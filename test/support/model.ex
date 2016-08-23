@@ -8,6 +8,7 @@ defmodule ValidField.Support.Model do
     field :title, :string
     field :password, :string
     field :password_confirmation
+    field :date_of_birth, Ecto.DateTime
 
     timestamps
   end
