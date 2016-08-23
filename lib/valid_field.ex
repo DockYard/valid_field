@@ -199,6 +199,7 @@ defmodule ValidField do
     do: Atom.to_string(field)
   defp stringify_field(field) when is_binary(field), do: field
 
+  defp stringify_keys(%{__struct__: _struct} = struct), do: struct
   defp stringify_keys(map) when is_map(map),
     do: Enum.into(map, %{}, fn({key, value}) ->
       {stringify_field(key), stringify_keys(value)}

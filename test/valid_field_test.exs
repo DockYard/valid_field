@@ -23,6 +23,12 @@ defmodule ValidFieldTest do
       ValidField.with_changeset(%Model{})
       |> ValidField.assert_invalid_field(:title, ["", nil, "Something else"])
     end
+
+    assert_raise ValidField.ValidationError, "Expected the following values to be invalid for \"date_of_birth\": #Ecto.Date<2016-08-23>", fn ->
+      %Model{}
+      |> ValidField.with_changeset()
+      |> ValidField.assert_invalid_field(:date_of_birth, [Ecto.Date.utc])
+    end
   end
 
   test "valid field with no values passed" do
