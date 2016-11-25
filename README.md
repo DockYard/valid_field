@@ -11,7 +11,7 @@ Add valid_field to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:valid_field, "~> 0.2.0", only: :test}]
+  [{:valid_field, "~> 0.4.0", only: :test}]
 end
 ```
 
