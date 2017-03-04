@@ -25,9 +25,13 @@ defmodule ValidFieldTest do
     end
 
     assert_raise ValidField.ValidationError, "Expected the following values to be invalid for \"date_of_birth\": #Ecto.Date<2016-08-23>", fn ->
+      date =
+        {2016, 08, 23}
+        |> Ecto.Date.from_erl()
+
       %Model{}
       |> ValidField.with_changeset()
-      |> ValidField.assert_invalid_field(:date_of_birth, [Ecto.Date.utc()])
+      |> ValidField.assert_invalid_field(:date_of_birth, [date])
     end
   end
 
