@@ -1,7 +1,6 @@
-# ValidField
+# ValidField [![Build Status](https://travis-ci.org/DockYard/valid_field.svg?branch=master)](https://travis-ci.org/DockYard/valid_field) [![Inline docs](http://inch-ci.org/github/dockyard/valid_field.svg?branch=master)](http://inch-ci.org/github/dockyard/valid_field)
 
-[![Build Status](https://travis-ci.org/DockYard/valid_field.svg?branch=master)](https://travis-ci.org/DockYard/valid_field)
-[![Inline docs](http://inch-ci.org/github/dockyard/valid_field.svg?branch=master)](http://inch-ci.org/github/dockyard/valid_field)
+**[ValidField is built and maintained by DockYard, contact us for expert Elixir and Phoenix consulting](https://dockyard.com/phoenix-consulting)**.
 
 ValidField allows you to unit test changesets
 
