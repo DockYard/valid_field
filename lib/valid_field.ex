@@ -187,13 +187,13 @@ defmodule ValidField do
       |> stringify_keys()
 
     changeset.(model, params).errors
-    |> Dict.has_key?(field)
+    |> Keyword.has_key?(field)
   end
 
   defp invalid_for?(%{data: model, changeset_func: changeset}, field, value),
     do: invalid_for?(%{params: %{}, data: model, changeset_func: changeset}, field, value)
   defp invalid_for?(changeset, field, _value),
-    do: Dict.has_key?(changeset.errors, field)
+    do: Keyword.has_key?(changeset.errors, field)
 
   defp stringify_field(field) when is_atom(field),
     do: Atom.to_string(field)
