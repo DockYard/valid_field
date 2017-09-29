@@ -45,8 +45,8 @@ defmodule ValidField.Mixfile do
   defp deps do
     [
       {:ecto, "~> 2.1", only: [:dev, :test]},
-      {:ex_doc, "~> 0.10", only: :docs},
-      {:inch_ex, ">= 0.0.0", only: :docs}
+      {:ex_doc, "~> 0.10", only: :dev},
+      {:inch_ex, ">= 0.0.0", only: :dev}
     ]
   end
 end
