@@ -1,6 +1,6 @@
 defmodule ValidField.Mixfile do
   use Mix.Project
-  @version "0.5.0"
+  @version "0.6.0"
 
   def project do
     [app: :valid_field,
@@ -32,7 +32,7 @@ defmodule ValidField.Mixfile do
   end
 
   defp package do
-    [maintainers: ["Dan McClain", "Brian Cardarella"],
+    [maintainers: ["Brian Cardarella"],
      licenses: ["MIT"],
      links: %{"GitHub" => "https://github.com/DockYard/valid_field"},
      files: ~w(mix.exs README.md lib test) ++

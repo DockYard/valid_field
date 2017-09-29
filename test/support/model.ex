@@ -10,7 +10,7 @@ defmodule ValidField.Support.Model do
     field :password_confirmation
     field :date_of_birth, Ecto.Date
 
-    timestamps
+    timestamps()
   end
 
   def changeset(model, params \\ :empty) do
