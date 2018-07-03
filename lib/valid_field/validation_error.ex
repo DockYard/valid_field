@@ -5,6 +5,8 @@ defmodule ValidField.ValidationError do
 
   defexception [:field, :values, :validity]
 
+  @doc false
+  @spec message(Exception.t()) :: String.t()
   def message(exception) do
     formatted_field = inspect(Atom.to_string(exception.field))
     formatted_values = _format_values(exception.values)

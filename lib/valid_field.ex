@@ -16,12 +16,13 @@ defmodule ValidField do
       ...> |> ValidField.assert_valid_field(:first_name, [nil, ""])
       ** (ValidField.ValidationError) Expected the following values to be valid for "first_name": nil, ""
   """
-  @spec assert_valid_field(map, atom, list) :: map
+  @spec assert_valid_field(Ecto.Changeset.t(), atom, list) :: Ecto.Changeset.t() | no_return
   def assert_valid_field(changeset, field, values) do
     invalid_values =
       changeset
       |> map_value_assertions(field, values)
-      |> Enum.filter_map(fn {_key, value} -> value end, fn {key, _value} -> key end)
+      |> Enum.filter(fn {_key, value} -> value end)
+      |> Enum.map(fn {key, _value} -> key end)
 
     if invalid_values != [] do
       raise ValidField.ValidationError, field: field, values: values, validity: "valid"
@@ -40,7 +41,7 @@ defmodule ValidField do
       ...> |> ValidField.assert_valid_field(:first_name)
       ** (ValidField.ValidationError) Expected the following values to be valid for "first_name": nil
   """
-  @spec assert_valid_field(map, atom) :: map
+  @spec assert_valid_field(Ecto.Changeset.t(), atom) :: Ecto.Changeset.t() | no_return
   def assert_valid_field(changeset, field) do
     assert_valid_field(changeset, field, [Map.get(changeset.data, field)])
   end
@@ -57,9 +58,11 @@ defmodule ValidField do
       ...> |> ValidField.assert_valid_fields([:first_name, :last_name])
       ** (ValidField.ValidationError) Expected the following values to be valid for "first_name": nil
   """
-  @spec assert_valid_fields(map, list) :: map
+  @spec assert_valid_fields(Ecto.Changeset.t(), list) :: Ecto.Changeset.t() | no_return
   def assert_valid_fields(changeset, fields) when is_list(fields) do
-    Enum.each(fields, &(assert_valid_field(changeset, &1)))
+    Enum.each(fields, &assert_valid_field(changeset, &1))
+
+    changeset
   end
 
   @doc """
@@ -75,12 +78,13 @@ defmodule ValidField do
       ...> |> ValidField.assert_invalid_field(:first_name, ["Test"])
       ** (ValidField.ValidationError) Expected the following values to be invalid for "first_name": "Test"
   """
-  @spec assert_invalid_field(map, atom, list) :: map
+  @spec assert_invalid_field(Ecto.Changeset.t(), atom, list) :: Ecto.Changeset.t() | no_return
   def assert_invalid_field(changeset, field, values) do
     valid_values =
       changeset
       |> map_value_assertions(field, values)
-      |> Enum.filter_map(fn {_key, value} -> !value end, fn {key, _value} -> key end)
+      |> Enum.filter(fn {_key, value} -> !value end)
+      |> Enum.map(fn {key, _value} -> key end)
 
     if valid_values != [] do
       raise ValidField.ValidationError, field: field, values: valid_values, validity: "invalid"
@@ -99,7 +103,7 @@ defmodule ValidField do
       ...> |> ValidField.assert_invalid_field(:first_name)
       ** (ValidField.ValidationError) Expected the following values to be invalid for "first_name": "Test"
   """
-  @spec assert_invalid_field(map, atom) :: map
+  @spec assert_invalid_field(Ecto.Changeset.t(), atom) :: Ecto.Changeset.t() | no_return
   def assert_invalid_field(changeset, field) do
     assert_invalid_field(changeset, field, [Map.get(changeset.data, field)])
   end
@@ -116,21 +120,23 @@ defmodule ValidField do
       ...> |> ValidField.assert_invalid_fields([:first_name])
       ** (ValidField.ValidationError) Expected the following values to be invalid for "first_name": "Test"
   """
-  @spec assert_invalid_fields(map, list) :: map
+  @spec assert_invalid_fields(Ecto.Changeset.t(), list) :: Ecto.Changeset.t() | no_return
   def assert_invalid_fields(changeset, fields) when is_list(fields) do
-    Enum.each fields, fn(field) -> assert_invalid_field(changeset, field) end
+    Enum.each(fields, fn field -> assert_invalid_field(changeset, field) end)
+
+    changeset
   end
 
   @doc """
   Combines `assert_valid_field/3` and `assert_invalid_field/3` into a single call.
-  The third argument is the collection of valid values to be tested. The fourth argument 
+  The third argument is the collection of valid values to be tested. The fourth argument
   is the collection of invalid values to be tested.
 
   ## Examples
       ValidField.with_changeset(%Model{})
       |> ValidField.assert_field(:first_name, ["George", "Barry"], ["", nil])
   """
-  @spec assert_field(map, atom, list, list) :: map
+  @spec assert_field(Ecto.Changeset.t(), atom, list, list) :: Ecto.Changeset.t() | no_return
   def assert_field(changeset, field, valid_values, invalid_values) do
     changeset
     |> assert_valid_field(field, valid_values)
@@ -148,7 +154,7 @@ defmodule ValidField do
       |> ValidField.assert_invalid_field(:first_name, [nil])
       |> ValidField.assert_invalid_field(:first_name, [""])
   """
-  @spec with_changeset(Ecto.Model.t) :: map
+  @spec with_changeset(Ecto.Model.t()) :: %{data: any, changeset_func: fun}
   def with_changeset(model),
     do: with_changeset(model, &model.__struct__.changeset/2)
 
@@ -163,21 +169,20 @@ defmodule ValidField do
       |> ValidField.assert_invalid_field(:first_name, [nil])
       |> ValidField.assert_invalid_field(:first_name, [""])
   """
-  @spec with_changeset(Ecto.Model.t, function) :: map
+  @spec with_changeset(Ecto.Model.t(), function) :: %{data: any, changeset_func: fun}
   def with_changeset(model, func) when is_function(func),
     do: %{data: model, changeset_func: func}
 
   @doc """
   Add values that will be set on the changeset during assertion runs
   """
-  @spec put_params(map, map) :: map
+  @spec put_params(Ecto.Changeset.t(), map) :: Ecto.Changeset.t()
   def put_params(changeset, params) when is_map(changeset) do
     Map.put(changeset, :params, params)
   end
 
   defp map_value_assertions(changeset, field, values) do
-    values
-    |> Enum.map(&({&1, invalid_for?(changeset, field, &1)}))
+    Enum.map(values, &{&1, invalid_for?(changeset, field, &1)})
   end
 
   defp invalid_for?(%{data: model, params: params, changeset_func: changeset}, field, value) do
@@ -192,17 +197,22 @@ defmodule ValidField do
 
   defp invalid_for?(%{data: model, changeset_func: changeset}, field, value),
     do: invalid_for?(%{params: %{}, data: model, changeset_func: changeset}, field, value)
+
   defp invalid_for?(changeset, field, _value),
     do: Keyword.has_key?(changeset.errors, field)
 
   defp stringify_field(field) when is_atom(field),
     do: Atom.to_string(field)
+
   defp stringify_field(field) when is_binary(field), do: field
 
   defp stringify_keys(%{__struct__: _struct} = struct), do: struct
+
   defp stringify_keys(map) when is_map(map),
-    do: Enum.into(map, %{}, fn({key, value}) ->
-      {stringify_field(key), stringify_keys(value)}
-    end)
+    do:
+      Enum.into(map, %{}, fn {key, value} ->
+        {stringify_field(key), stringify_keys(value)}
+      end)
+
   defp stringify_keys(value), do: value
 end

@@ -3,19 +3,26 @@ defmodule ValidField.Support.Model do
   import Ecto.Changeset
 
   schema "contacts" do
-    field :first_name, :string
-    field :last_name, :string
-    field :title, :string
-    field :password, :string
-    field :password_confirmation
-    field :date_of_birth, Ecto.Date
+    field(:first_name, :string)
+    field(:last_name, :string)
+    field(:title, :string)
+    field(:password, :string)
+    field(:password_confirmation)
+    field(:date_of_birth, :date)
 
     timestamps()
   end
 
   def changeset(model, params \\ :empty) do
     model
-    |> cast(params, [:first_name, :last_name, :title, :password, :password_confirmation, :date_of_birth])
+    |> cast(params, [
+      :first_name,
+      :last_name,
+      :title,
+      :password,
+      :password_confirmation,
+      :date_of_birth
+    ])
     |> validate_required([:first_name])
     |> validate_length(:first_name, min: 1)
     |> validate_confirmation(:password)
