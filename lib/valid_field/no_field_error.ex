@@ -1,6 +1,6 @@
 defmodule ValidField.NoFieldError do
   @moduledoc """
-  Raises validation error.
+  Raised when trying to use a field which doesn't exist on the schema.
   """
 
   defexception [:field, :schema]
