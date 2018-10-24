@@ -14,7 +14,6 @@ defmodule ValidField.NoFieldError do
     formatted_schema =
       exception.schema |> Atom.to_string() |> inspect() |> String.replace("Elixir.", "")
 
-    # "Field #{formatted_field} does not exist on schema #{formatted_schema}."
     "Field #{formatted_field} does not exist on schema #{formatted_schema}."
   end
 end
