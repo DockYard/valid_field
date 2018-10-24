@@ -191,8 +191,9 @@ defmodule ValidField do
       |> Map.put(field, value)
       |> stringify_keys()
 
-    changeset.(model, params).errors
-    |> Keyword.has_key?(field)
+    changeset.(model, params)
+    |> Ecto.Changeset.traverse_errors(fn _ -> nil end)
+    |> Map.has_key?(field)
   end
 
   defp invalid_for?(%{data: model, changeset_func: changeset}, field, value),

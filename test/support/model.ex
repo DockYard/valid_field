@@ -2,6 +2,8 @@ defmodule ValidField.Support.Model do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias ValidField.Support.EmbeddedModel
+
   schema "contacts" do
     field(:first_name, :string)
     field(:last_name, :string)
@@ -9,6 +11,7 @@ defmodule ValidField.Support.Model do
     field(:password, :string)
     field(:password_confirmation)
     field(:date_of_birth, :date)
+    embeds_one(:address, EmbeddedModel)
 
     timestamps()
   end
@@ -26,6 +29,7 @@ defmodule ValidField.Support.Model do
     |> validate_required([:first_name])
     |> validate_length(:first_name, min: 1)
     |> validate_confirmation(:password)
+    |> cast_embed(:address)
   end
 
   def other_changeset(model, params) do
