@@ -8,8 +8,7 @@ defmodule ValidField.NoFieldError do
   @doc false
   @spec message(Exception.t()) :: String.t()
   def message(exception) do
-    formatted_field =
-      exception.field |> Atom.to_string() |> inspect()
+    formatted_field = exception.field |> Atom.to_string() |> inspect()
 
     formatted_schema =
       exception.schema |> Atom.to_string() |> inspect() |> String.replace("Elixir.", "")
