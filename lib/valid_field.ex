@@ -25,7 +25,7 @@ defmodule ValidField do
       |> Enum.map(fn {key, _value} -> key end)
 
     if field not in Map.keys(changeset.data) do
-      raise ValidField.NoFieldError, field: field, schema: changeset.data.__struct__
+      raise ValidField.UnknownFieldError, field: field, schema: changeset.data.__struct__
     end
 
     if invalid_values != [] do
@@ -91,7 +91,7 @@ defmodule ValidField do
       |> Enum.map(fn {key, _value} -> key end)
 
     if field not in Map.keys(changeset.data) do
-      raise ValidField.NoFieldError, field: field, schema: changeset.data.__struct__
+      raise ValidField.UnknownFieldError, field: field, schema: changeset.data.__struct__
     end
 
     if valid_values != [] do

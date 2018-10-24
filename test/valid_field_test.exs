@@ -108,14 +108,14 @@ defmodule ValidFieldTest do
   end
 
   test "nonexisting fields" do
-    assert_raise ValidField.NoFieldError,
+    assert_raise ValidField.UnknownFieldError,
                  "Field \"unknown\" does not exist on schema \"ValidField.Support.Model\".",
                  fn ->
                    ValidField.with_changeset(%Model{})
                    |> ValidField.assert_valid_field(:unknown, [])
                  end
 
-    assert_raise ValidField.NoFieldError,
+    assert_raise ValidField.UnknownFieldError,
                  "Field \"unknown\" does not exist on schema \"ValidField.Support.Model\".",
                  fn ->
                    ValidField.with_changeset(%Model{})
