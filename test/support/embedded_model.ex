@@ -12,7 +12,7 @@ defmodule ValidField.Support.EmbeddedModel do
     timestamps()
   end
 
-  def changeset(%EmbeddedModel{} = embedded_model, params \\ :empty) do
+  def changeset(%__MODULE__{} = embedded_model, params \\ :empty) do
     embedded_model
     |> cast(params, [:street, :city])
     |> validate_required([:street, :city])
