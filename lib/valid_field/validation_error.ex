@@ -1,6 +1,6 @@
 defmodule ValidField.ValidationError do
   @moduledoc """
-  Raised on validation errors.
+  Raises validation error.
   """
 
   defexception [:field, :values, :validity]
