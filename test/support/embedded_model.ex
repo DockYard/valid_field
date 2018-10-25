@@ -3,7 +3,6 @@ defmodule ValidField.Support.EmbeddedModel do
 
   import Ecto.Changeset
 
-
   embedded_schema do
     field(:street, :string)
     field(:city, :string)
