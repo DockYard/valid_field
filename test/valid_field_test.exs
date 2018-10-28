@@ -8,6 +8,7 @@ defmodule ValidFieldTest do
     |> ValidField.assert_valid_field(:first_name, ["Test", "Good Value"])
     |> ValidField.assert_valid_field(:last_name, ["", nil, "Something"])
     |> ValidField.assert_valid_field(:title, ["", nil, "Something else"])
+    |> ValidField.assert_valid_field(:address, [nil, %{city: "Boston", street: "Tremont St"}])
 
     assert_raise ValidField.ValidationError,
                  "Expected the following values to be invalid for \"first_name\": \"Test\", \"Good Value\"",
@@ -40,6 +41,17 @@ defmodule ValidFieldTest do
                    %Model{}
                    |> ValidField.with_changeset()
                    |> ValidField.assert_invalid_field(:date_of_birth, [date])
+                 end
+
+    assert_raise ValidField.ValidationError,
+                 "Expected the following values to be invalid for \"address\": nil, %{city: \"Boston\", street: \"Tremont St\"}",
+                 fn ->
+                   %Model{}
+                   |> ValidField.with_changeset()
+                   |> ValidField.assert_invalid_field(:address, [
+                     nil,
+                     %{city: "Boston", street: "Tremont St"}
+                   ])
                  end
   end
 
@@ -74,12 +86,20 @@ defmodule ValidFieldTest do
   test "invalid field values" do
     ValidField.with_changeset(%Model{})
     |> ValidField.assert_invalid_field(:first_name, ["", nil])
+    |> ValidField.assert_invalid_field(:address, [%{city: "Boston", street: ""}])
 
     assert_raise ValidField.ValidationError,
                  "Expected the following values to be valid for \"first_name\": \"\", nil",
                  fn ->
                    ValidField.with_changeset(%Model{})
                    |> ValidField.assert_valid_field(:first_name, ["", nil])
+                 end
+
+    assert_raise ValidField.ValidationError,
+                 "Expected the following values to be valid for \"address\": %{city: \"Boston\", street: \"\"}",
+                 fn ->
+                   ValidField.with_changeset(%Model{})
+                   |> ValidField.assert_valid_field(:address, [%{city: "Boston", street: ""}])
                  end
   end
 
