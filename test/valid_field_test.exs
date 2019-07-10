@@ -107,7 +107,16 @@ defmodule ValidFieldTest do
                  end
   end
 
-  test "passing funciton to changeset" do
+  test "unknown fields" do
+    assert_raise ValidField.UnknownFieldError,
+                 "Field \"unknown\" does not exist on schema \"ValidField.Support.Model\".",
+                 fn ->
+                   ValidField.with_changeset(%Model{})
+                   |> ValidField.assert_valid_field(:unknown, [])
+                 end
+  end
+
+  test "passing function to changeset" do
     custom_changeset_function =
       ValidField.with_changeset(%Model{}, &Model.changeset/2)
       |> ValidField.assert_invalid_field(:first_name, ["", nil])
